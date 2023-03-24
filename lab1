@@ -2,47 +2,50 @@
 #Числа, содержащие К1 и К2 разрядов выводятся прописью.
 buff_len = 1
 work_buff = ''
-k1_or_k2 = []  # числа с разрядами == к1 или к2
-k1_btw_k2 = []  # числа с разрядами между к1 и к2
+k1_or_k2 = [] # числа с разрядами == к1 или к2
+k1_btw_k2 = [] # числа с разрядами между к1 и к2
 k1 = int(input('Введите k1 '))
 k2 = int(input('Введите k2 '))
 
+
 # перевод цифр пропись
 def to_words(n):
-    numeros = {0: 'ноль', 1: 'один', 2: 'два', 3: 'три', 4: 'четыре', 5: 'пять',
-         6: 'шесть', 7: 'семь', 8: 'восемь', 9: 'девять'}
+    numeros = {'0': 'ноль', '1': 'один', '2': 'два', '3': 'три', '4': 'четыре', '5': 'пять',
+               '6': 'шесть', '7': 'семь', '8': 'восемь', '9': 'девять', 'A': 'A', 'B': 'B',
+               'C': 'C', 'D': 'D', 'E': 'E', 'F': 'F'}
     return numeros.get(n)
 
-with open('subbav.txt', 'r') as f:
+
+with open('test.txt', 'r') as f:
     buff = f.read(buff_len)
     if not buff:
         print('Файл пуст')
-    while buff:  # чтение файла поблочно
-        while '0' <= buff <= '9':
-            if '0' <= buff <= '9':
-                work_buff += buff
-            buff = f.read(buff_len)  # читаем блок
-        if len(work_buff) > 0:  # проверска подходит ли число под условие
+    while buff:
+        while buff in ['1', '2', '3', '4', '5', '6', '7',
+                       '8', '9', 'A', 'B', 'C', 'D', 'E',
+                       'F']:
+            work_buff += buff
+            buff = f.read(buff_len)
+        if len(work_buff) > 0:
             try:
-                if k2 > len(work_buff) > k1:
+                if k1 < len(work_buff) < k2:
                     k1_btw_k2.append(work_buff)
                 if (len(work_buff) == k1) or (len(work_buff) == k2):
-                    k1_or_k2.append(work_buff)
+                    a = ''
+                    for i in work_buff.strip():
+                        a += to_words(i) + ' '
+                    k1_or_k2.append(work_buff.strip() + ' : ' + a)
+                    k1_btw_k2.append(work_buff)
             except ValueError:
                 work_buff = ''
-                buff = f.read(buff_len) # читаем следующий блок
+                buff = f.read(buff_len)
         work_buff = ''
-        buff = f.read(buff_len) # читаем следующий блок
+        buff = f.read(buff_len)
     if (not k1_btw_k2) and (not k1_or_k2):
         print('Нет подходящих цифр')
     else:
         if k1_btw_k2:
-            print('Цифры содержащие от К1 до К2 разрядов:', *k1_btw_k2)
+            print('Числа содержащие от К1 до К2 разрядов:', *k1_btw_k2)
         if k1_or_k2:
-            answer = []
-            for i in k1_or_k2:
-                a = ''
-                for j in i:
-                    a += to_words(int(j)) + ' '
-                answer.append(str(i) + ' : ' + a)
-            print('Цифры содержащие К1 и К2 разрядов:', *answer)
+            print('Числа содержащие К1 и К2 разрядов:', *k1_or_k2)
+
